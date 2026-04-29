@@ -1,0 +1,847 @@
+openapi: 3.1.0
+
+info:
+  title: EVM Tracker API
+  description: |
+    API REST para gestionar proyectos y actividades con cálculo automático de
+    indicadores de Valor Ganado (Earned Value Management).
+
+    ## Indicadores EVM
+
+    | Indicador | Descripción | Fórmula |
+    |-----------|-------------|---------|
+    | PV | Valor Planificado | `(planned_percentage / 100) × bac` |
+    | EV | Valor Ganado | `(actual_percentage / 100) × bac` |
+    | CV | Variación de Costo | `EV − AC` |
+    | SV | Variación de Cronograma | `EV − PV` |
+    | CPI | Índice de Rendimiento de Costo | `EV / AC` |
+    | SPI | Índice de Rendimiento de Cronograma | `EV / PV` |
+    | EAC | Estimación al Completar | `BAC / CPI` |
+    | VAC | Variación al Completar | `BAC − EAC` |
+
+    ## Manejo de casos no calculables
+
+    Cuando una división por cero impide el cálculo (por ejemplo, CPI cuando AC = 0),
+    el campo afectado retorna `null` y el campo `razon_*` correspondiente explica el motivo.
+    El frontend nunca debe mostrar `null` directamente al usuario.
+
+    ## Estados de CPI y SPI
+
+    | Valor | estado_cpi | estado_spi |
+    |-------|-----------|-----------|
+    | > 1 | `bajo_presupuesto` | `adelantado` |
+    | = 1 | `en_presupuesto` | `en_cronograma` |
+    | < 1 | `sobre_presupuesto` | `atrasado` |
+    | null | `datos_insuficientes` | `datos_insuficientes` |
+
+  version: 1.0.0
+  contact:
+    name: EVM Tracker — Soporte interno
+
+servers:
+  - url: http://localhost:8000
+    description: Servidor de desarrollo local
+
+tags:
+  - name: Proyectos
+    description: Gestión de proyectos con indicadores EVM consolidados
+  - name: Actividades
+    description: Gestión de actividades dentro de un proyecto con indicadores EVM por actividad
+
+paths:
+
+  /api/v1/projects:
+
+    get:
+      tags: [Proyectos]
+      summary: Listar todos los proyectos
+      description: |
+        Retorna la lista completa de proyectos registrados. Cada proyecto incluye
+        un resumen con el conteo de actividades y los indicadores EVM consolidados
+        (calculados a partir de la suma de componentes de sus actividades).
+      operationId: listarProyectos
+      responses:
+        "200":
+          description: Lista de proyectos obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProyectoResumen"
+              example:
+                - id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  name: "Rediseño Portal"
+                  description: "Actualización del portal corporativo"
+                  total_actividades: 3
+                  evm_consolidado:
+                    bac_total: 50000.00
+                    pv: 30000.00
+                    ev: 20000.00
+                    ac: 35000.00
+                    cv: -15000.00
+                    sv: -10000.00
+                    cpi: 0.5714
+                    spi: 0.6667
+                    eac: 87500.00
+                    vac: -37500.00
+                    estado_cpi: "sobre_presupuesto"
+                    estado_spi: "atrasado"
+                    razon_cpi: null
+                    razon_spi: null
+
+    post:
+      tags: [Proyectos]
+      summary: Crear un proyecto
+      description: |
+        Crea un nuevo proyecto. El nombre es obligatorio. La descripción es opcional.
+      operationId: crearProyecto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProyectoCrear"
+            examples:
+              con_descripcion:
+                summary: Con nombre y descripción
+                value:
+                  name: "Rediseño Portal"
+                  description: "Actualización del portal corporativo"
+              sin_descripcion:
+                summary: Solo nombre
+                value:
+                  name: "App Móvil"
+      responses:
+        "201":
+          description: Proyecto creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProyectoBase"
+        "422":
+          description: Error de validación — nombre vacío o ausente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorValidacion"
+
+  /api/v1/projects/{project_id}:
+
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+
+    get:
+      tags: [Proyectos]
+      summary: Ver detalle de un proyecto
+      description: |
+        Retorna el proyecto con todas sus actividades y los indicadores EVM calculados
+        tanto por actividad como de forma consolidada para el proyecto completo.
+      operationId: obtenerProyecto
+      responses:
+        "200":
+          description: Detalle del proyecto obtenido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProyectoDetalle"
+        "404":
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorNotFound"
+              example:
+                detail: "Proyecto no encontrado"
+
+    put:
+      tags: [Proyectos]
+      summary: Editar un proyecto
+      description: |
+        Actualiza el nombre y/o descripción de un proyecto existente.
+        Se puede enviar solo el campo que se desea modificar.
+      operationId: editarProyecto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProyectoEditar"
+            example:
+              name: "Nuevo nombre del proyecto"
+      responses:
+        "200":
+          description: Proyecto actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProyectoBase"
+        "404":
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorNotFound"
+        "422":
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorValidacion"
+
+    delete:
+      tags: [Proyectos]
+      summary: Eliminar un proyecto
+      description: |
+        Elimina permanentemente un proyecto y **todas sus actividades asociadas** (cascade delete).
+        Esta operación no se puede deshacer.
+      operationId: eliminarProyecto
+      responses:
+        "204":
+          description: Proyecto y sus actividades eliminados correctamente
+        "404":
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorNotFound"
+
+  /api/v1/projects/{project_id}/activities:
+
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+
+    get:
+      tags: [Actividades]
+      summary: Listar actividades de un proyecto
+      description: |
+        Retorna todas las actividades del proyecto con sus indicadores EVM calculados.
+      operationId: listarActividades
+      responses:
+        "200":
+          description: Lista de actividades obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActividadRespuesta"
+        "404":
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorNotFound"
+
+    post:
+      tags: [Actividades]
+      summary: Crear una actividad
+      description: |
+        Crea una nueva actividad dentro del proyecto especificado.
+
+        **Reglas de validación:**
+        - `bac` debe ser mayor a 0
+        - `actual_cost` debe ser mayor o igual a 0 (puede ser 0 si aún no se ha incurrido en costo)
+        - `planned_percentage` y `actual_percentage` deben estar entre 0 y 100 inclusive
+
+        Los indicadores EVM se calculan automáticamente y se retornan en la respuesta.
+      operationId: crearActividad
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActividadCrear"
+            examples:
+              caso_normal:
+                summary: Actividad con datos completos
+                value:
+                  name: "Diseño UI"
+                  bac: 10000
+                  planned_percentage: 60
+                  actual_percentage: 40
+                  actual_cost: 7000
+              sin_costo:
+                summary: Actividad recién iniciada (AC = 0)
+                value:
+                  name: "Fase inicial"
+                  bac: 5000
+                  planned_percentage: 20
+                  actual_percentage: 10
+                  actual_cost: 0
+      responses:
+        "201":
+          description: Actividad creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActividadRespuesta"
+        "404":
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorNotFound"
+        "422":
+          description: Error de validación (BAC <= 0, AC < 0, porcentaje fuera de rango)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorValidacion"
+
+  /api/v1/projects/{project_id}/activities/{activity_id}:
+
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - $ref: "#/components/parameters/ActivityId"
+
+    put:
+      tags: [Actividades]
+      summary: Editar una actividad
+      description: |
+        Actualiza los campos de una actividad existente. Los indicadores EVM
+        se recalculan automáticamente con los nuevos valores.
+        Se aplican las mismas reglas de validación que al crear.
+      operationId: editarActividad
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActividadEditar"
+            example:
+              actual_percentage: 55
+              actual_cost: 9000
+      responses:
+        "200":
+          description: Actividad actualizada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActividadRespuesta"
+        "404":
+          description: Actividad no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorNotFound"
+              example:
+                detail: "Actividad no encontrada"
+        "422":
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorValidacion"
+
+    delete:
+      tags: [Actividades]
+      summary: Eliminar una actividad
+      description: |
+        Elimina permanentemente una actividad. Esta operación no se puede deshacer.
+      operationId: eliminarActividad
+      responses:
+        "204":
+          description: Actividad eliminada correctamente
+        "404":
+          description: Actividad no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorNotFound"
+
+components:
+
+  parameters:
+    ProjectId:
+      name: project_id
+      in: path
+      required: true
+      description: UUID del proyecto
+      schema:
+        type: string
+        format: uuid
+      example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+
+    ActivityId:
+      name: activity_id
+      in: path
+      required: true
+      description: UUID de la actividad
+      schema:
+        type: string
+        format: uuid
+      example: "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+
+  schemas:
+
+    # ──────────────────────────────────────────────
+    # Schemas de EVM
+    # ──────────────────────────────────────────────
+
+    EstadoCPI:
+      type: string
+      enum:
+        - bajo_presupuesto
+        - en_presupuesto
+        - sobre_presupuesto
+        - datos_insuficientes
+      description: |
+        Interpretación del CPI en español.
+        - `bajo_presupuesto`: CPI > 1 — se gasta menos de lo que se avanza
+        - `en_presupuesto`: CPI = 1 — ejecución perfecta
+        - `sobre_presupuesto`: CPI < 1 — se gasta más de lo que se avanza
+        - `datos_insuficientes`: CPI es null (AC = 0)
+
+    EstadoSPI:
+      type: string
+      enum:
+        - adelantado
+        - en_cronograma
+        - atrasado
+        - datos_insuficientes
+      description: |
+        Interpretación del SPI en español.
+        - `adelantado`: SPI > 1 — se avanza más rápido de lo planificado
+        - `en_cronograma`: SPI = 1 — ejecución perfecta
+        - `atrasado`: SPI < 1 — se avanza más lento de lo planificado
+        - `datos_insuficientes`: SPI es null (PV = 0)
+
+    RazonEVM:
+      type: string
+      nullable: true
+      enum:
+        - costo_real_es_cero
+        - valor_planificado_es_cero
+        - null
+      description: |
+        Motivo por el cual un indicador no pudo calcularse.
+        Retorna `null` cuando el indicador sí pudo calcularse correctamente.
+
+    EVMActividad:
+      type: object
+      description: Indicadores EVM calculados para una actividad individual
+      required:
+        - pv
+        - ev
+        - cv
+        - sv
+        - cpi
+        - spi
+        - eac
+        - vac
+        - estado_cpi
+        - estado_spi
+        - razon_cpi
+        - razon_spi
+      properties:
+        pv:
+          type: number
+          format: float
+          description: "Valor Planificado = (planned_percentage / 100) × bac"
+          example: 6000.00
+        ev:
+          type: number
+          format: float
+          description: "Valor Ganado = (actual_percentage / 100) × bac"
+          example: 4000.00
+        cv:
+          type: number
+          format: float
+          description: "Variación de Costo = EV − AC"
+          example: -3000.00
+        sv:
+          type: number
+          format: float
+          description: "Variación de Cronograma = EV − PV"
+          example: -2000.00
+        cpi:
+          type: number
+          format: float
+          nullable: true
+          description: "Índice de Rendimiento de Costo = EV / AC. Null si AC = 0."
+          example: 0.5714
+        spi:
+          type: number
+          format: float
+          nullable: true
+          description: "Índice de Rendimiento de Cronograma = EV / PV. Null si PV = 0."
+          example: 0.6667
+        eac:
+          type: number
+          format: float
+          nullable: true
+          description: "Estimación al Completar = BAC / CPI. Null si CPI es null."
+          example: 17500.00
+        vac:
+          type: number
+          format: float
+          nullable: true
+          description: "Variación al Completar = BAC − EAC. Null si EAC es null."
+          example: -7500.00
+        estado_cpi:
+          $ref: "#/components/schemas/EstadoCPI"
+        estado_spi:
+          $ref: "#/components/schemas/EstadoSPI"
+        razon_cpi:
+          $ref: "#/components/schemas/RazonEVM"
+        razon_spi:
+          $ref: "#/components/schemas/RazonEVM"
+
+    EVMConsolidado:
+      type: object
+      description: |
+        Indicadores EVM consolidados del proyecto completo.
+        Calculados por suma de componentes (estándar PMI):
+        se suman PV, EV y AC de todas las actividades, luego se calculan los índices.
+      required:
+        - bac_total
+        - pv
+        - ev
+        - ac
+        - cv
+        - sv
+        - cpi
+        - spi
+        - eac
+        - vac
+        - estado_cpi
+        - estado_spi
+        - razon_cpi
+        - razon_spi
+      properties:
+        bac_total:
+          type: number
+          format: float
+          description: "Suma del BAC de todas las actividades del proyecto"
+          example: 50000.00
+        pv:
+          type: number
+          format: float
+          description: "Valor Planificado consolidado = Σ PV_i"
+          example: 30000.00
+        ev:
+          type: number
+          format: float
+          description: "Valor Ganado consolidado = Σ EV_i"
+          example: 20000.00
+        ac:
+          type: number
+          format: float
+          description: "Costo Real consolidado = Σ AC_i"
+          example: 35000.00
+        cv:
+          type: number
+          format: float
+          description: "Variación de Costo consolidada = EV − AC"
+          example: -15000.00
+        sv:
+          type: number
+          format: float
+          description: "Variación de Cronograma consolidada = EV − PV"
+          example: -10000.00
+        cpi:
+          type: number
+          format: float
+          nullable: true
+          description: "CPI = EV_total / AC_total. Null si AC_total = 0."
+          example: 0.5714
+        spi:
+          type: number
+          format: float
+          nullable: true
+          description: "SPI = EV_total / PV_total. Null si PV_total = 0."
+          example: 0.6667
+        eac:
+          type: number
+          format: float
+          nullable: true
+          description: "EAC = BAC_total / CPI. Null si CPI es null."
+          example: 87500.00
+        vac:
+          type: number
+          format: float
+          nullable: true
+          description: "VAC = BAC_total − EAC. Null si EAC es null."
+          example: -37500.00
+        estado_cpi:
+          $ref: "#/components/schemas/EstadoCPI"
+        estado_spi:
+          $ref: "#/components/schemas/EstadoSPI"
+        razon_cpi:
+          $ref: "#/components/schemas/RazonEVM"
+        razon_spi:
+          $ref: "#/components/schemas/RazonEVM"
+
+    # ──────────────────────────────────────────────
+    # Schemas de Proyecto
+    # ──────────────────────────────────────────────
+
+    ProyectoCrear:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Nombre del proyecto
+          example: "Rediseño Portal"
+        description:
+          type: string
+          nullable: true
+          description: Descripción opcional del proyecto
+          example: "Actualización del portal corporativo"
+
+    ProyectoEditar:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Nuevo nombre del proyecto
+          example: "Rediseño Portal v2"
+        description:
+          type: string
+          nullable: true
+          description: Nueva descripción del proyecto
+          example: "Actualización completa del portal"
+
+    ProyectoBase:
+      type: object
+      description: Datos base de un proyecto sin actividades ni EVM
+      required:
+        - id
+        - name
+        - description
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        name:
+          type: string
+          example: "Rediseño Portal"
+        description:
+          type: string
+          nullable: true
+          example: "Actualización del portal corporativo"
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-04-28T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-04-29T08:30:00Z"
+
+    ProyectoResumen:
+      allOf:
+        - $ref: "#/components/schemas/ProyectoBase"
+        - type: object
+          description: Proyecto con conteo de actividades e indicadores EVM consolidados (para la lista)
+          required:
+            - total_actividades
+            - evm_consolidado
+          properties:
+            total_actividades:
+              type: integer
+              description: Número de actividades registradas en el proyecto
+              example: 3
+            evm_consolidado:
+              $ref: "#/components/schemas/EVMConsolidado"
+
+    ProyectoDetalle:
+      allOf:
+        - $ref: "#/components/schemas/ProyectoBase"
+        - type: object
+          description: Proyecto con lista completa de actividades y EVM consolidado (para el dashboard)
+          required:
+            - actividades
+            - evm_consolidado
+          properties:
+            actividades:
+              type: array
+              items:
+                $ref: "#/components/schemas/ActividadRespuesta"
+            evm_consolidado:
+              $ref: "#/components/schemas/EVMConsolidado"
+
+    # ──────────────────────────────────────────────
+    # Schemas de Actividad
+    # ──────────────────────────────────────────────
+
+    ActividadCrear:
+      type: object
+      required:
+        - name
+        - bac
+        - planned_percentage
+        - actual_percentage
+        - actual_cost
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Nombre de la actividad
+          example: "Diseño UI"
+        bac:
+          type: number
+          format: float
+          exclusiveMinimum: 0
+          description: "Presupuesto total planificado (Budget at Completion). Debe ser mayor a 0."
+          example: 10000.00
+        planned_percentage:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: "Porcentaje de avance planificado a la fecha de corte (0–100)"
+          example: 60.00
+        actual_percentage:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: "Porcentaje de avance real completado (0–100)"
+          example: 40.00
+        actual_cost:
+          type: number
+          format: float
+          minimum: 0
+          description: "Costo real incurrido hasta la fecha (Actual Cost). Puede ser 0."
+          example: 7000.00
+
+    ActividadEditar:
+      type: object
+      description: Todos los campos son opcionales. Solo se actualizan los campos enviados.
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: "Diseño UI — revisado"
+        bac:
+          type: number
+          format: float
+          exclusiveMinimum: 0
+          example: 12000.00
+        planned_percentage:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 70.00
+        actual_percentage:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 55.00
+        actual_cost:
+          type: number
+          format: float
+          minimum: 0
+          example: 9000.00
+
+    ActividadRespuesta:
+      type: object
+      description: Actividad con todos sus datos y sus indicadores EVM calculados
+      required:
+        - id
+        - project_id
+        - name
+        - bac
+        - planned_percentage
+        - actual_percentage
+        - actual_cost
+        - created_at
+        - updated_at
+        - evm
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+        project_id:
+          type: string
+          format: uuid
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        name:
+          type: string
+          example: "Diseño UI"
+        bac:
+          type: number
+          format: float
+          example: 10000.00
+        planned_percentage:
+          type: number
+          format: float
+          example: 60.00
+        actual_percentage:
+          type: number
+          format: float
+          example: 40.00
+        actual_cost:
+          type: number
+          format: float
+          example: 7000.00
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-04-28T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-04-29T08:30:00Z"
+        evm:
+          $ref: "#/components/schemas/EVMActividad"
+
+    # ──────────────────────────────────────────────
+    # Schemas de Error
+    # ──────────────────────────────────────────────
+
+    ErrorNotFound:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Mensaje descriptivo del error
+          example: "Proyecto no encontrado"
+
+    ErrorValidacion:
+      type: object
+      description: Error de validación retornado por FastAPI / Pydantic (formato estándar)
+      required:
+        - detail
+      properties:
+        detail:
+          type: array
+          items:
+            type: object
+            required:
+              - loc
+              - msg
+              - type
+            properties:
+              loc:
+                type: array
+                items:
+                  type: string
+                description: Ubicación del campo con error
+                example: ["body", "bac"]
+              msg:
+                type: string
+                description: Mensaje de error en español
+                example: "El presupuesto (BAC) debe ser mayor a cero"
+              type:
+                type: string
+                description: Tipo de error de validación
+                example: "value_error"
