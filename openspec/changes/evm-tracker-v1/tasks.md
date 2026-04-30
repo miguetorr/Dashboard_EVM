@@ -67,9 +67,9 @@
 
 ## 9. Frontend — Tipos y utilidades
 
-- [ ] 9.1 Crear tipos TypeScript: Project, Activity, EVMResult, EVMConsolidated, EVMStatus
-- [ ] 9.2 Crear evmCalculator.ts con misma lógica que backend (para cálculo reactivo local)
-- [ ] 9.3 Crear cliente API (axios instance con baseURL, interceptors de error, funciones tipadas por endpoint)
+- [x] 9.1 Crear tipos TypeScript: Project, Activity, EVMResult, EVMConsolidated, EVMStatus
+- [x] 9.2 Crear evmCalculator.ts con misma lógica que backend (para cálculo reactivo local)
+- [x] 9.3 Crear cliente API (axios instance con baseURL, interceptors de error, funciones tipadas por endpoint)
 
 ## 10. Frontend — Componentes compartidos
 
