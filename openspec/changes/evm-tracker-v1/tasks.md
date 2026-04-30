@@ -50,10 +50,10 @@
 
 ## 7. Routers (capa HTTP)
 
-- [ ] 7.1 Crear router de proyectos: GET /api/v1/projects, POST, GET /{id}, PUT /{id}, DELETE /{id}
-- [ ] 7.2 Crear router de actividades: GET /api/v1/projects/{id}/activities, POST, PUT /{act_id}, DELETE /{act_id}
-- [ ] 7.3 Crear main.py con app factory, CORS middleware, inclusión de routers, y docs en /docs
-- [ ] 7.4 Configurar config.py con pydantic-settings para DATABASE_URL y CORS origins
+- [x] 7.1 Crear router de proyectos: GET /api/v1/projects, POST, GET /{id}, PUT /{id}, DELETE /{id}
+- [x] 7.2 Crear router de actividades: GET /api/v1/projects/{id}/activities, POST, PUT /{act_id}, DELETE /{act_id}
+- [x] 7.3 Crear main.py con app factory, CORS middleware, inclusión de routers, y docs en /docs
+- [x] 7.4 Configurar config.py con pydantic-settings para DATABASE_URL y CORS origins
 
 ## 8. Tests de integración (API)
 
