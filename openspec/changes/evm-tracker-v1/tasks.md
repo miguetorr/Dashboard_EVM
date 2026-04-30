@@ -36,9 +36,9 @@
 
 ## 5. Repositorios
 
-- [ ] 5.1 Crear base.py con AbstractRepository
-- [ ] 5.2 Crear ProjectRepository: get_all, get_by_id, create, update, delete
-- [ ] 5.3 Crear ActivityRepository: get_by_project_id, get_by_id, create, update, delete
+- [x] 5.1 Crear base.py con AbstractRepository
+- [x] 5.2 Crear ProjectRepository: get_all, get_by_id, create, update, delete
+- [x] 5.3 Crear ActivityRepository: get_by_project_id, get_by_id, create, update, delete
 
 ## 6. Servicios
 
