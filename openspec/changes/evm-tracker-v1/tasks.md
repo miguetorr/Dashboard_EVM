@@ -9,10 +9,10 @@
 
 ## 2. Base de datos
 
-- [ ] 2.1 Crear script DDL (SQL) con tabla projects, tabla activities, CHECK constraints, cascade delete, y extensión uuid-ossp/pgcrypto
-- [ ] 2.2 Crear script seed (SQL) con al menos 2 proyectos y 3+ actividades cada uno, cubriendo escenarios variados (buen estado, mal estado, AC=0)
-- [ ] 2.3 Crear modelos SQLAlchemy (Project, Activity) con relaciones y constraints mapeados
-- [ ] 2.4 Crear database.py con engine, SessionLocal y get_db dependency
+- [x] 2.1 Crear script DDL (SQL) con tabla projects, tabla activities, CHECK constraints, cascade delete, y extensión uuid-ossp/pgcrypto
+- [x] 2.2 Crear script seed (SQL) con al menos 2 proyectos y 3+ actividades cada uno, cubriendo escenarios variados (buen estado, mal estado, AC=0)
+- [x] 2.3 Crear modelos SQLAlchemy (Project, Activity) con relaciones y constraints mapeados
+- [x] 2.4 Crear database.py con engine, SessionLocal y get_db dependency
 
 ## 3. Core — Motor EVM
 
