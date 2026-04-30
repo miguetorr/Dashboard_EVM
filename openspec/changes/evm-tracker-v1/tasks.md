@@ -29,10 +29,10 @@
 
 ## 4. Schemas Pydantic (contratos de API)
 
-- [ ] 4.1 Crear schemas de proyecto: ProjectCreate, ProjectUpdate, ProjectResponse, ProjectListResponse (con resumen EVM)
-- [ ] 4.2 Crear schemas de actividad: ActivityCreate, ActivityUpdate, ActivityResponse (con validaciones: bac>0, ac>=0, porcentajes 0-100)
-- [ ] 4.3 Crear schemas EVM: EVMResult (por actividad), EVMConsolidated (por proyecto) con campos estado_cpi, estado_spi, razon_cpi, razon_spi
-- [ ] 4.4 Crear ProjectDetailResponse con lista de actividades + evm_consolidado
+- [x] 4.1 Crear schemas de proyecto: ProjectCreate, ProjectUpdate, ProjectResponse, ProjectListResponse (con resumen EVM)
+- [x] 4.2 Crear schemas de actividad: ActivityCreate, ActivityUpdate, ActivityResponse (con validaciones: bac>0, ac>=0, porcentajes 0-100)
+- [x] 4.3 Crear schemas EVM: EVMResult (por actividad), EVMConsolidated (por proyecto) con campos estado_cpi, estado_spi, razon_cpi, razon_spi
+- [x] 4.4 Crear ProjectDetailResponse con lista de actividades + evm_consolidado
 
 ## 5. Repositorios
 
