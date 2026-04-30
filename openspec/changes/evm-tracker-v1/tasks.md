@@ -16,16 +16,16 @@
 
 ## 3. Core — Motor EVM
 
-- [ ] 3.1 Crear evm_constants.py con estados (bajo_presupuesto, sobre_presupuesto, etc.) y razones en español
-- [ ] 3.2 Crear evm_calculator.py con función calculate_activity_evm(bac, planned_pct, actual_pct, actual_cost) → EVMResult
-- [ ] 3.3 Crear función calculate_project_evm(activities) → EVMConsolidated (suma de componentes)
-- [ ] 3.4 Implementar manejo de edge cases: AC=0, PV=0, CPI=0 → null + razón
-- [ ] 3.5 Implementar redondeo: índices a 4 decimales, monetarios a 2 decimales
-- [ ] 3.6 Escribir tests unitarios para calculate_activity_evm: caso estándar, actividad completa, CPI/SPI=1
-- [ ] 3.7 Escribir tests unitarios para edge cases: AC=0, PV=0, actual_pct=0, todo en cero
-- [ ] 3.8 Escribir tests unitarios para calculate_project_evm: consolidado múltiples actividades, sin actividades, todas AC=0
-- [ ] 3.9 Escribir tests unitarios para interpretación de estados CPI/SPI en español
-- [ ] 3.10 Escribir tests unitarios para precisión de redondeo
+- [x] 3.1 Crear evm_constants.py con estados (bajo_presupuesto, sobre_presupuesto, etc.) y razones en español
+- [x] 3.2 Crear evm_calculator.py con función calculate_activity_evm(bac, planned_pct, actual_pct, actual_cost) → EVMResult
+- [x] 3.3 Crear función calculate_project_evm(activities) → EVMConsolidated (suma de componentes)
+- [x] 3.4 Implementar manejo de edge cases: AC=0, PV=0, CPI=0 → null + razón
+- [x] 3.5 Implementar redondeo: índices a 4 decimales, monetarios a 2 decimales
+- [x] 3.6 Escribir tests unitarios para calculate_activity_evm: caso estándar, actividad completa, CPI/SPI=1
+- [x] 3.7 Escribir tests unitarios para edge cases: AC=0, PV=0, actual_pct=0, todo en cero
+- [x] 3.8 Escribir tests unitarios para calculate_project_evm: consolidado múltiples actividades, sin actividades, todas AC=0
+- [x] 3.9 Escribir tests unitarios para interpretación de estados CPI/SPI en español
+- [x] 3.10 Escribir tests unitarios para precisión de redondeo
 
 ## 4. Schemas Pydantic (contratos de API)
 
