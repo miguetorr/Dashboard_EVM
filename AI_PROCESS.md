@@ -20,9 +20,9 @@ Este archivo documenta todos los prompts enviados durante la sesión de explorac
 
 > si has la suma de componentes luego calcula
 >
-> Mejor en la fecha de corte que pusiste el cut_off_date en el modelo DB manejemoslo inplicito que cuando la persona registe el porcentaje de avance a la fecha de corte esa fecha de corte es implicita en cuanto ingresa ese dato asi no tendriamos que hacer ningun tipo de calculo ya que no lo especifica claro
+> Mejor en la fecha de corte que pusiste el cut_off_date en el modelo DB manejemoslo implicito que cuando la persona registe el porcentaje de avance a la fecha de corte esa fecha de corte es implicita en cuanto ingresa ese dato asi no tendriamos que hacer ningun tipo de calculo
 >
-> para los edge cases que pusiste la idea es que no crashee entonces me parece bien de esa forma que muestre null, pero que en el frontend no muestre null si no diga algo como que no se pude realiazar el calculo y mostrar el motivo o algo que visualmente sea bonito el null no se debe mostrar
+> para los edge cases que pusiste la idea es que no crashee entonces  de esa forma que muestre null, pero que en el frontend no muestre null si no diga algo como que no se pude realiazar el calculo y mostrar el motivo o algo que visualmente sea bonito el null no se debe mostrar
 >
 > 1. por ahora en la V1 va a ser sin autenticacion entonces podemos dejar preparado eso para en caso de hacerlo no rompa nada ya que sera una v2 pero por ahora todos los lideres de proyecto ven lo de todos
 >
@@ -80,23 +80,8 @@ Este archivo documenta todos los prompts enviados durante la sesión de explorac
 > que crees que podemos agregar a la documentacion para que nos ayude en la construccion final y tener todo claro 
 
 ---
-## Prompt 8 — Implementacion de documentacion
+## Prompt 9 — Implementacion de documentacion
 
 > Si me parece completa lo sugerido
-
----
-## Prompt 8 — completar la documentacion
-
-> que crees que podemos agregar a la documentacion para que nos ayude en la construccion final y tener todo claro 
-
----
-## Prompt 8 — completar la documentacion
-
-> que crees que podemos agregar a la documentacion para que nos ayude en la construccion final y tener todo claro 
-
----
-## Prompt 8 — completar la documentacion
-
-> que crees que podemos agregar a la documentacion para que nos ayude en la construccion final y tener todo claro 
 
 ---
