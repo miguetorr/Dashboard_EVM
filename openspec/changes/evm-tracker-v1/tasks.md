@@ -1,11 +1,11 @@
 ## 1. Configuración del proyecto
 
-- [ ] 1.1 Crear estructura de directorios del backend (app/, routers/, schemas/, models/, services/, repositories/, core/, tests/)
-- [ ] 1.2 Crear requirements.txt con dependencias: fastapi, uvicorn, sqlalchemy, psycopg2-binary, pydantic, pydantic-settings, pytest, httpx, pytest-cov
-- [ ] 1.3 Configurar flake8 (.flake8) y pyproject.toml con black
-- [ ] 1.4 Crear estructura de directorios del frontend con Vite + React + TypeScript
-- [ ] 1.5 Configurar ESLint y Prettier en el frontend (.eslintrc.cjs, .prettierrc)
-- [ ] 1.6 Instalar dependencias frontend: axios, recharts, react-router-dom
+- [x] 1.1 Crear estructura de directorios del backend (app/, routers/, schemas/, models/, services/, repositories/, core/, tests/)
+- [x] 1.2 Crear requirements.txt con dependencias: fastapi, uvicorn, sqlalchemy, psycopg2-binary, pydantic, pydantic-settings, pytest, httpx, pytest-cov
+- [x] 1.3 Configurar flake8 (.flake8) y pyproject.toml con black
+- [x] 1.4 Crear estructura de directorios del frontend con Vite + React + TypeScript
+- [x] 1.5 Configurar ESLint y Prettier en el frontend (.eslintrc.cjs, .prettierrc)
+- [x] 1.6 Instalar dependencias frontend: axios, recharts, react-router-dom
 
 ## 2. Base de datos
 
