@@ -3,6 +3,16 @@
         "openspec": true,
         "New-Item": true,
         "Out-Null": true,
-        "npm install": true
+        "npm install": true,
+        "/^cd \"C:\\\\Users\\\\Administrador\\\\Desktop\\\\Proyectos PY\\\\Prueba Tecnica\\\\backend\"; python -m pytest tests/unit/test_evm_calculator\\.py -v 2>&1$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^cd \"C:\\\\Users\\\\Administrador\\\\Desktop\\\\Proyectos PY\\\\Prueba Tecnica\\\\backend\"; Get-ChildItem -Name \\| Where-Object \\{ \\$_ -match \"venv\\|env\\|\\\\\\.venv\" \\}; python --version$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        ".\\.venv\\Scripts\\Activate.ps1": true,
+        "pip": true
     }
 }
