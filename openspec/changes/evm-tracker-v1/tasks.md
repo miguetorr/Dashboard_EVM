@@ -57,13 +57,13 @@
 
 ## 8. Tests de integración (API)
 
-- [ ] 8.1 Crear conftest.py con fixtures: test database, test client, proyecto y actividad de ejemplo
-- [ ] 8.2 Tests de integración para endpoints de proyectos: crear, listar, detalle, editar, eliminar, 404s
-- [ ] 8.3 Tests de integración para endpoints de actividades: crear, listar, editar, eliminar, 404s
-- [ ] 8.4 Tests de integración para validaciones: bac<=0, ac<0, porcentaje>100, porcentaje<0, nombre vacío
-- [ ] 8.5 Tests de integración para cascade delete: eliminar proyecto verifica que actividades se eliminan
-- [ ] 8.6 Tests de integración para edge cases EVM en respuestas: verificar null + razones en JSON de respuesta
-- [ ] 8.7 Verificar cobertura ≥ 80% en lógica de negocio con pytest-cov
+- [x] 8.1 Crear conftest.py con fixtures: test database, test client, proyecto y actividad de ejemplo
+- [x] 8.2 Tests de integración para endpoints de proyectos: crear, listar, detalle, editar, eliminar, 404s
+- [x] 8.3 Tests de integración para endpoints de actividades: crear, listar, editar, eliminar, 404s
+- [x] 8.4 Tests de integración para validaciones: bac<=0, ac<0, porcentaje>100, porcentaje<0, nombre vacío
+- [x] 8.5 Tests de integración para cascade delete: eliminar proyecto verifica que actividades se eliminan
+- [x] 8.6 Tests de integración para edge cases EVM en respuestas: verificar null + razones en JSON de respuesta
+- [x] 8.7 Verificar cobertura ≥ 80% en lógica de negocio con pytest-cov
 
 ## 9. Frontend — Tipos y utilidades
 
