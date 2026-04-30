@@ -13,6 +13,7 @@
             "matchCommandLine": true
         },
         ".\\.venv\\Scripts\\Activate.ps1": true,
-        "pip": true
+        "pip": true,
+        "npx tsc": true
     }
 }
