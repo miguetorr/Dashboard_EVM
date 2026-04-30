@@ -86,13 +86,13 @@
 
 ## 12. Frontend — Dashboard de proyecto
 
-- [ ] 12.1 Crear componente EVMIndicators (BAC, PV, EV, AC, CV, SV, CPI, SPI, EAC, VAC con badges y tooltips con fórmulas)
-- [ ] 12.2 Crear componente ActivityTable con columnas de datos + EVM, botones ✏️ y 🗑️, y lógica "Ver más/Ver menos" (5 iniciales)
-- [ ] 12.3 Crear componente ActivityModal con campos de actividad + vista previa EVM reactiva (recalcula al editar sin API)
-- [ ] 12.4 Crear componente EVMChart (barras agrupadas PV/EV/AC por actividad con Recharts)
-- [ ] 12.5 Crear componente ProjectSelector (dropdown breadcrumb para cambio rápido de proyecto)
-- [ ] 12.6 Crear page ProjectDashboardPage integrando todos los componentes del dashboard
-- [ ] 12.7 Integrar eliminación de actividad con ConfirmDialog (muestra nombre de la actividad)
+- [x] 12.1 Crear componente EVMIndicators (BAC, PV, EV, AC, CV, SV, CPI, SPI, EAC, VAC con badges y tooltips con fórmulas)
+- [x] 12.2 Crear componente ActivityTable con columnas de datos + EVM, botones ✏️ y 🗑️, y lógica "Ver más/Ver menos" (5 iniciales)
+- [x] 12.3 Crear componente ActivityModal con campos de actividad + vista previa EVM reactiva (recalcula al editar sin API)
+- [x] 12.4 Crear componente EVMChart (barras agrupadas PV/EV/AC por actividad con Recharts)
+- [x] 12.5 Crear componente ProjectSelector (dropdown breadcrumb para cambio rápido de proyecto)
+- [x] 12.6 Crear page ProjectDashboardPage integrando todos los componentes del dashboard
+- [x] 12.7 Integrar eliminación de actividad con ConfirmDialog (muestra nombre de la actividad)
 
 ## 13. Frontend — Routing y App
 
