@@ -79,10 +79,10 @@
 
 ## 11. Frontend — Página de lista de proyectos
 
-- [ ] 11.1 Crear componente ProjectCard (nombre, descripción, conteo actividades, CPI/SPI con badges)
-- [ ] 11.2 Crear page ProjectListPage con grid de cards, botón "Nuevo", estado vacío
-- [ ] 11.3 Crear modal para crear/editar proyecto (campos: nombre, descripción)
-- [ ] 11.4 Integrar eliminación de proyecto con ConfirmDialog (muestra nombre + conteo de actividades)
+- [x] 11.1 Crear componente ProjectCard (nombre, descripción, conteo actividades, CPI/SPI con badges)
+- [x] 11.2 Crear page ProjectListPage con grid de cards, botón "Nuevo", estado vacío
+- [x] 11.3 Crear modal para crear/editar proyecto (campos: nombre, descripción)
+- [x] 11.4 Integrar eliminación de proyecto con ConfirmDialog (muestra nombre + conteo de actividades)
 
 ## 12. Frontend — Dashboard de proyecto
 
