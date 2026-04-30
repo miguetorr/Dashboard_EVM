@@ -42,11 +42,11 @@
 
 ## 6. Servicios
 
-- [ ] 6.1 Crear exceptions.py con excepciones de dominio (ProjectNotFound, ActivityNotFound)
-- [ ] 6.2 Crear ProjectService: list_projects (con resumen EVM), get_project_detail (con actividades + EVM consolidado), create, update, delete
-- [ ] 6.3 Crear ActivityService: list_by_project, create (valida que proyecto exista), update, delete
-- [ ] 6.4 Integrar EVM calculator en services (calcular indicadores al retornar actividades/proyectos)
-- [ ] 6.5 Implementar AnonymousPrincipal como preparación para auth V2
+- [x] 6.1 Crear exceptions.py con excepciones de dominio (ProjectNotFound, ActivityNotFound)
+- [x] 6.2 Crear ProjectService: list_projects (con resumen EVM), get_project_detail (con actividades + EVM consolidado), create, update, delete
+- [x] 6.3 Crear ActivityService: list_by_project, create (valida que proyecto exista), update, delete
+- [x] 6.4 Integrar EVM calculator en services (calcular indicadores al retornar actividades/proyectos)
+- [x] 6.5 Implementar AnonymousPrincipal como preparación para auth V2
 
 ## 7. Routers (capa HTTP)
 
