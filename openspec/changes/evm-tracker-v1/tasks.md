@@ -73,9 +73,9 @@
 
 ## 10. Frontend — Componentes compartidos
 
-- [ ] 10.1 Crear componente StatusBadge (badge de color según estado EVM)
-- [ ] 10.2 Crear componente ConfirmDialog (diálogo de confirmación reutilizable con botón rojo)
-- [ ] 10.3 Crear componente EVMGlossary (panel colapsable con definiciones en español)
+- [x] 10.1 Crear componente StatusBadge (badge de color según estado EVM)
+- [x] 10.2 Crear componente ConfirmDialog (diálogo de confirmación reutilizable con botón rojo)
+- [x] 10.3 Crear componente EVMGlossary (panel colapsable con definiciones en español)
 
 ## 11. Frontend — Página de lista de proyectos
 
