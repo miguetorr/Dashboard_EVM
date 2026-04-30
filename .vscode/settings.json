@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "openspec": true,
+        "New-Item": true,
+        "Out-Null": true,
+        "npm install": true
+    }
+}
