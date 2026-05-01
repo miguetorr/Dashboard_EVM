@@ -96,14 +96,14 @@
 
 ## 13. Frontend — Routing y App
 
-- [ ] 13.1 Configurar React Router con rutas: /projects (lista), /projects/:id (dashboard)
-- [ ] 13.2 Configurar App.tsx con layout base y router
-- [ ] 13.3 Manejar estados de carga y error en las páginas
+- [x] 13.1 Configurar React Router con rutas: /projects (lista), /projects/:id (dashboard)
+- [x] 13.2 Configurar App.tsx con layout base y router
+- [x] 13.3 Manejar estados de carga y error en las páginas
 
 ## 14. Entregables finales
 
-- [ ] 14.1 Crear README.md con instrucciones completas: levantar PostgreSQL, ejecutar DDL, ejecutar seed, levantar backend, levantar frontend
-- [ ] 14.2 Verificar OpenAPI docs accesible en /docs con descripciones, schemas y códigos de error
-- [ ] 14.3 Confirmar que los schemas de FastAPI son consistentes con openapi.yaml (nombres de campos, tipos, nullables)
-- [ ] 14.4 Verificar que linters pasan sin errores (flake8 backend, eslint frontend)
-- [ ] 14.5 Verificar cobertura de tests ≥ 80% en lógica de negocio
+- [x] 14.1 Crear README.md con instrucciones completas: levantar PostgreSQL, ejecutar DDL, ejecutar seed, levantar backend, levantar frontend
+- [x] 14.2 Verificar OpenAPI docs accesible en /docs con descripciones, schemas y códigos de error
+- [x] 14.3 Confirmar que los schemas de FastAPI son consistentes con openapi.yaml (nombres de campos, tipos, nullables)
+- [x] 14.4 Verificar que linters pasan sin errores (flake8 backend, eslint frontend)
+- [x] 14.5 Verificar cobertura de tests ≥ 80% en lógica de negocio

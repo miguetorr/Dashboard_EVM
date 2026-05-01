@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { ProjectListItem } from "../types/evm";
 import {
@@ -26,21 +26,31 @@ export default function ProjectListPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletingProject, setDeletingProject] = useState<ProjectListItem | null>(null);
 
-  const loadProjects = useCallback(async () => {
-    try {
-      setError(null);
-      const data = await getProjects();
-      setProjects(data);
-    } catch {
-      setError("No se pudieron cargar los proyectos.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Carga inicial y recarga
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    loadProjects();
-  }, [loadProjects]);
+    let cancelled = false;
+    getProjects()
+      .then((data) => {
+        if (!cancelled) {
+          setProjects(data);
+          setError(null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setError("No se pudieron cargar los proyectos.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [reloadKey]);
+
+  function reload() {
+    setLoading(true);
+    setReloadKey((k) => k + 1);
+  }
 
   // ── Crear / Editar ──────────────────────────────────────────────────────
 
@@ -62,7 +72,7 @@ export default function ProjectListPage() {
         await createProject(data);
       }
       setModalOpen(false);
-      await loadProjects();
+      reload();
     } catch {
       setError("No se pudo guardar el proyecto.");
     }
@@ -81,7 +91,7 @@ export default function ProjectListPage() {
       await deleteProject(deletingProject.id);
       setDeleteDialogOpen(false);
       setDeletingProject(null);
-      await loadProjects();
+      reload();
     } catch {
       setError("No se pudo eliminar el proyecto.");
     }
@@ -97,7 +107,7 @@ export default function ProjectListPage() {
     return (
       <div className="page-status page-status--error">
         <p>{error}</p>
-        <button className="btn btn--primary" onClick={loadProjects}>
+        <button className="btn btn--primary" onClick={reload}>
           Reintentar
         </button>
       </div>

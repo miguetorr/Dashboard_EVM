@@ -10,7 +10,7 @@ Dashboard para el monitoreo de proyectos basada en la metodología **Earned Valu
 |------|-----------|
 | Backend | FastAPI (Python 3.11+) |
 | Base de datos | PostgreSQL 15+ |
-| Frontend | React 18 + TypeScript + Vite |
+| Frontend | React 19 + TypeScript + Vite |
 | Gráficas | Recharts |
 | Documentación API | OpenAPI 3.1 (Swagger UI integrado) |
 
@@ -33,8 +33,7 @@ Dashboard para el monitoreo de proyectos basada en la metodología **Earned Valu
 │   │   │   ├── activity.py
 │   │   │   └── evm.py
 │   │   ├── models/                # Modelos ORM de SQLAlchemy
-│   │   │   ├── project.py
-│   │   │   └── activity.py
+│   │   │   └── models.py
 │   │   ├── services/              # Lógica de negocio
 │   │   │   ├── project_service.py
 │   │   │   └── activity_service.py
@@ -48,10 +47,13 @@ Dashboard para el monitoreo de proyectos basada en la metodología **Earned Valu
 │   ├── tests/
 │   │   ├── unit/
 │   │   │   └── test_evm_calculator.py
-│   │   ├── integration/
-│   │   │   ├── test_projects_api.py
-│   │   │   └── test_activities_api.py
-│   │   └── conftest.py
+│   │   └── integration/
+│   │       ├── conftest.py
+│   │       ├── test_projects_api.py
+│   │       └── test_activities_api.py
+│   ├── database/
+│   │   ├── schema.sql             # DDL: tablas + constraints
+│   │   └── seed.sql               # Datos de ejemplo
 │   ├── requirements.txt
 │   ├── .flake8
 │   └── pyproject.toml
@@ -60,14 +62,15 @@ Dashboard para el monitoreo de proyectos basada en la metodología **Earned Valu
 │   │   ├── api/
 │   │   │   └── client.ts
 │   │   ├── components/
-│   │   │   ├── ProjectCard.tsx
-│   │   │   ├── ActivityTable.tsx
 │   │   │   ├── ActivityModal.tsx
-│   │   │   ├── EVMIndicators.tsx
+│   │   │   ├── ActivityTable.tsx
+│   │   │   ├── ConfirmDialog.tsx
 │   │   │   ├── EVMChart.tsx
 │   │   │   ├── EVMGlossary.tsx
+│   │   │   ├── EVMIndicators.tsx
+│   │   │   ├── ProjectCard.tsx
+│   │   │   ├── ProjectModal.tsx
 │   │   │   ├── ProjectSelector.tsx
-│   │   │   ├── ConfirmDialog.tsx
 │   │   │   └── StatusBadge.tsx
 │   │   ├── pages/
 │   │   │   ├── ProjectListPage.tsx
@@ -80,13 +83,11 @@ Dashboard para el monitoreo de proyectos basada en la metodología **Earned Valu
 │   │   └── main.tsx
 │   ├── package.json
 │   ├── tsconfig.json
-│   └── .eslintrc.cjs
-├── sql/
-│   ├── ddl.sql                    # Definición de tablas + constraints
-│   └── seed.sql                   # Datos de ejemplo
+│   └── eslint.config.js
 ├── openapi.yaml                   # Contrato de la API
 ├── .env.example                   # Variables de entorno de referencia
 └── README.md
+```
 ```
 
 ---
@@ -130,10 +131,10 @@ CORS_ORIGINS=http://localhost:5173
 psql -U postgres -c "CREATE DATABASE evm_tracker;"
 
 # Ejecutar el DDL (tablas + constraints)
-psql -U postgres -d evm_tracker -f sql/ddl.sql
+psql -U postgres -d evm_tracker -f backend/database/schema.sql
 
 # Cargar datos de ejemplo (opcional)
-psql -U postgres -d evm_tracker -f sql/seed.sql
+psql -U postgres -d evm_tracker -f backend/database/seed.sql
 ```
 
 ### 4. Levantar el backend

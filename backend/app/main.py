@@ -11,7 +11,10 @@ def create_app() -> FastAPI:
     """Fábrica de la aplicación FastAPI."""
     app = FastAPI(
         title="EVM Tracker API",
-        description="API para gestión de proyectos con indicadores de Valor Ganado (EVM)",
+        description=(
+            "API para gestión de proyectos con "
+            "indicadores de Valor Ganado (EVM)"
+        ),
         version="1.0.0",
         docs_url="/docs",
         redoc_url="/redoc",

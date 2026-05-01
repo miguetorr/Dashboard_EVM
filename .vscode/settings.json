@@ -14,6 +14,10 @@
         },
         ".\\.venv\\Scripts\\Activate.ps1": true,
         "pip": true,
-        "npx tsc": true
+        "npx tsc": true,
+        "npx eslint": true,
+        "ForEach-Object": true,
+        "Test-Path": true,
+        "ConvertFrom-Json": true
     }
 }

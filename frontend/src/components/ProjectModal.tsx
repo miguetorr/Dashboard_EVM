@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { ProjectListItem } from "../types/evm";
 
 interface ProjectModalProps {
@@ -8,23 +8,13 @@ interface ProjectModalProps {
   onCancel: () => void;
 }
 
-export default function ProjectModal({
-  open,
+function ProjectModalInner({
   project,
   onSave,
   onCancel,
-}: ProjectModalProps) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-
-  useEffect(() => {
-    if (open) {
-      setName(project?.name ?? "");
-      setDescription(project?.description ?? "");
-    }
-  }, [open, project]);
-
-  if (!open) return null;
+}: Omit<ProjectModalProps, "open">) {
+  const [name, setName] = useState(project?.name ?? "");
+  const [description, setDescription] = useState(project?.description ?? "");
 
   const isEdit = project !== null;
   const canSave = name.trim().length > 0;
@@ -89,5 +79,22 @@ export default function ProjectModal({
         </form>
       </div>
     </div>
+  );
+}
+
+export default function ProjectModal({
+  open,
+  project,
+  onSave,
+  onCancel,
+}: ProjectModalProps) {
+  if (!open) return null;
+  return (
+    <ProjectModalInner
+      key={project?.id ?? "__new__"}
+      project={project}
+      onSave={onSave}
+      onCancel={onCancel}
+    />
   );
 }

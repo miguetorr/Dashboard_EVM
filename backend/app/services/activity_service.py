@@ -4,7 +4,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from app.core.evm_calculator import EVMResult, calculate_activity_evm
+from app.core.evm_calculator import calculate_activity_evm
 from app.core.principals import AnonymousPrincipal
 from app.exceptions import ActivityNotFound, ProjectNotFound
 from app.models.models import Activity
@@ -15,7 +15,10 @@ from app.services.project_service import _evm_result_to_dict
 
 class ActivityService:
 
-    def __init__(self, db: Session, principal: AnonymousPrincipal | None = None) -> None:
+    def __init__(
+        self, db: Session,
+        principal: AnonymousPrincipal | None = None,
+    ) -> None:
         self.activity_repo = ActivityRepository(db)
         self.project_repo = ProjectRepository(db)
         self.principal = principal or AnonymousPrincipal()

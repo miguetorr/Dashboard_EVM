@@ -12,14 +12,17 @@ from app.core.evm_calculator import (
 )
 from app.core.principals import AnonymousPrincipal
 from app.exceptions import ProjectNotFound
-from app.models.models import Activity, Project
+from app.models.models import Project
 from app.repositories.activity_repository import ActivityRepository
 from app.repositories.project_repository import ProjectRepository
 
 
 class ProjectService:
 
-    def __init__(self, db: Session, principal: AnonymousPrincipal | None = None) -> None:
+    def __init__(
+        self, db: Session,
+        principal: AnonymousPrincipal | None = None,
+    ) -> None:
         self.project_repo = ProjectRepository(db)
         self.activity_repo = ActivityRepository(db)
         self.principal = principal or AnonymousPrincipal()
