@@ -8,35 +8,6 @@ Guía paso a paso para configurar, ejecutar y probar el proyecto completo.
 
 ---
 
-## Inicio rápido (3 comandos)
-
-Si ya tienes Python, Node.js y PostgreSQL instalados:
-
-```powershell
-# 1. Configura todo (entorno virtual + dependencias Python + dependencias npm)
-powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
-
-# 2. Crea la base de datos (solo la primera vez)
-psql -U postgres -c "CREATE DATABASE evm_tracker;"
-psql -U postgres -d evm_tracker -f backend\database\schema.sql
-psql -U postgres -d evm_tracker -f backend\database\seed.sql   # datos de ejemplo (opcional)
-
-# 3. Levanta backend + frontend juntos
-powershell -ExecutionPolicy Bypass -File scripts\start.ps1
-```
-
-Listo. Backend en http://localhost:8000, frontend en http://localhost:5173.
-
-### Correr tests y linters (un solo comando)
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\test.ps1
-```
-
-Ejecuta: pytest + cobertura + flake8 + tsc + eslint, todo de una vez.
-
----
-
 ## Guía detallada (paso a paso)
 
 ### 1. Requisitos previos
@@ -59,23 +30,26 @@ Ejecuta: pytest + cobertura + flake8 + tsc + eslint, todo de una vez.
 ### 2.1 Clonar el repositorio
 
 ```bash
-git clone <url-del-repositorio>
+git clone <https://github.com/miguetorr/Dashboard_EVM.git>
 cd Prueba-Tecnica
 ```
 
-### 2.2 Variables de entorno
+### 2.2 Instalar todo con el script de setup
 
-Copiar el archivo de ejemplo y ajustar los valores según tu entorno:
-
-```bash
-# Linux / macOS
-cp .env.example .env
-
-# Windows (PowerShell)
-Copy-Item .env.example .env
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
 ```
 
-Contenido del `.env` (editar con tus credenciales):
+Este script hace **automáticamente**:
+1. Copia `.env.example` → `.env` (si no existe)
+2. Crea el entorno virtual de Python (`.venv`)
+3. Instala todas las dependencias de Python (`requirements.txt`)
+4. Instala todas las dependencias de Node.js (`npm install`)
+5. Verifica que Python, FastAPI y Node.js estén correctos
+
+### 2.3 Ajustar variables de entorno (si es necesario)
+
+El script crea el `.env` con valores por defecto. Si tu PostgreSQL tiene credenciales distintas, edita el archivo:
 
 ```env
 # Conexión a PostgreSQL
@@ -91,15 +65,12 @@ CORS_ORIGINS=http://localhost:5173
 
 ## 3. Configuración de la base de datos
 
+Este es el único paso que **no** está automatizado (requiere PostgreSQL instalado y permisos del usuario).
+
 ### 3.1 Crear la base de datos
 
 ```bash
-# Conectarse a PostgreSQL como superusuario
-psql -U postgres
-
-# Dentro de psql:
-CREATE DATABASE evm_tracker;
-\q
+psql -U postgres -c "CREATE DATABASE evm_tracker;"
 ```
 
 ### 3.2 Ejecutar el DDL (estructura de tablas)
@@ -132,99 +103,67 @@ Deberías ver las tablas `projects` y `activities`.
 
 ---
 
-## 4. Configuración del backend
+## 4. Levantar la aplicación
 
-### 4.1 Crear y activar el entorno virtual
+### 4.1 Con el script (recomendado)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\start.ps1
+```
+
+Levanta **backend y frontend juntos**. Muestra logs unificados con prefijo `[backend]` y `[frontend]`. Presiona `Ctrl+C` para detener ambos.
+
+Una vez levantado:
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:8000
+- **Swagger UI (docs interactivos):** http://localhost:8000/docs
+- **ReDoc:** http://localhost:8000/redoc
+
+### 4.2 Manual (si necesitas control individual)
+
+<details>
+<summary>Ver pasos manuales para levantar backend y frontend por separado</summary>
+
+**Backend:**
 
 ```bash
 cd backend
-
-# Crear entorno virtual
-python -m venv .venv
-
-# Activar:
-# Windows (PowerShell):
-.venv\Scripts\Activate.ps1
-
-# Windows (CMD):
-.venv\Scripts\activate.bat
-
-# Linux / macOS:
-source .venv/bin/activate
-```
-
-> Sabrás que está activo cuando veas `(.venv)` al inicio del prompt.
-
-### 4.2 Instalar dependencias
-
-```bash
-pip install -r requirements.txt
-```
-
-Dependencias principales:
-- **fastapi** 0.115.0 — Framework web
-- **uvicorn** 0.30.6 — Servidor ASGI
-- **sqlalchemy** 2.0.35 — ORM
-- **psycopg2-binary** 2.9.9 — Driver PostgreSQL
-- **pydantic** 2.9.2 — Validación de datos
-- **pytest** 8.3.3 — Framework de tests
-
-### 4.3 Iniciar el servidor de desarrollo
-
-```bash
+.venv\Scripts\Activate.ps1          # Windows
+# source .venv/bin/activate          # Linux / macOS
 uvicorn app.main:app --reload --port 8000
 ```
 
-Salida esperada:
-```
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process
-```
-
-### 4.4 Verificar que funciona
-
-Abre en el navegador:
-- **Swagger UI (docs interactivos):** http://localhost:8000/docs
-- **ReDoc:** http://localhost:8000/redoc
-- **Health check rápido:** http://localhost:8000/api/v1/projects (debería devolver `[]` o los datos del seed)
-
----
-
-## 5. Configuración del frontend
-
-### 5.1 Instalar dependencias
+**Frontend** (en otra terminal):
 
 ```bash
 cd frontend
-npm install
-```
-
-### 5.2 Iniciar el servidor de desarrollo
-
-```bash
 npm run dev
 ```
 
-Salida esperada:
-```
-VITE v8.x.x  ready in xxx ms
-
-➜  Local:   http://localhost:5173/
-```
-
-### 5.3 Verificar que funciona
-
-Abre http://localhost:5173 en el navegador. Deberías ver la lista de proyectos (o el estado vacío con botón "+ Nuevo" si no cargaste el seed).
-
-> **Nota:** El frontend se conecta al backend en `http://localhost:8000/api/v1`. Asegúrate de que el backend esté corriendo antes de abrir el frontend.
+</details>
 
 ---
 
-## 6. Pruebas
+## 5. Pruebas
 
-### 6.1 Tests del backend
+### 5.1 Todo de una vez con el script (recomendado)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\test.ps1
+```
+
+Ejecuta en secuencia:
+1. **pytest** — 66 tests + reporte de cobertura (98%)
+2. **flake8** — linter de Python
+3. **tsc** — verificación de TypeScript
+4. **eslint** — linter del frontend
+
+### 5.2 Tests individuales (si necesitas depurar algo específico)
 
 Los tests usan **SQLite en memoria** — no necesitan PostgreSQL ni configuración adicional.
+
+<details>
+<summary>Ver comandos individuales de tests</summary>
 
 ```bash
 cd backend
@@ -248,6 +187,8 @@ pytest tests/unit/test_evm_calculator.py::test_calculate_activity_evm_standard
 pytest -v
 ```
 
+</details>
+
 **Resultado esperado:**
 ```
 66 passed
@@ -260,41 +201,32 @@ Coverage: 98%
 | Integration | `tests/integration/test_projects_api.py` | CRUD de proyectos, respuestas EVM, cascade delete, validaciones, 404s |
 | Integration | `tests/integration/test_activities_api.py` | CRUD de actividades, validaciones de rango, edge cases EVM en respuestas |
 
-### 6.2 Linters del backend
+### 5.3 Linters individuales
+
+<details>
+<summary>Ver comandos individuales de linters</summary>
+
+**Backend:**
 
 ```bash
 cd backend
-
-# Verificar estilo con flake8
 python -m flake8 app/
-
-# Verificar formato con black (solo chequeo, no modifica)
 black --check app/
-
-# Verificar orden de imports
 isort --check-only app/
 ```
 
-### 6.3 Linters del frontend
+**Frontend:**
 
 ```bash
 cd frontend
-
-# Verificar TypeScript (compilación sin emitir)
 npx tsc --noEmit
-
-# Verificar ESLint
-npx eslint src/
-# o equivalente:
-npm run lint
-
-# Verificar formato con Prettier (solo chequeo)
-npx prettier --check src/
-# o equivalente:
-npm run format:check
+npx eslint src/            # o: npm run lint
+npx prettier --check src/  # o: npm run format:check
 ```
 
-### 6.4 Build de producción del frontend
+</details>
+
+### 5.4 Build de producción del frontend
 
 ```bash
 cd frontend
@@ -305,7 +237,7 @@ Genera los archivos optimizados en `frontend/dist/`.
 
 ---
 
-## 7. Endpoints de la API para pruebas manuales
+## 6. Endpoints de la API para pruebas manuales
 
 Puedes probar los endpoints directamente desde Swagger UI (http://localhost:8000/docs) o con `curl`:
 
@@ -361,7 +293,7 @@ curl -X DELETE http://localhost:8000/api/v1/projects/{id}
 
 ---
 
-## 8. Validaciones que puedes probar
+## 7. Validaciones que puedes probar
 
 La API valida automáticamente y devuelve `422 Unprocessable Entity` si:
 
@@ -375,7 +307,7 @@ La API valida automáticamente y devuelve `422 Unprocessable Entity` si:
 
 ---
 
-## 9. Edge cases del motor EVM
+## 8. Edge cases del motor EVM
 
 Escenarios especiales que la API maneja correctamente:
 
@@ -385,56 +317,6 @@ Escenarios especiales que la API maneja correctamente:
 | `planned_percentage = 0` | SPI = `null`, razón: "No se puede calcular: valor planificado es cero" |
 | Todo en cero | PV, EV, AC = 0; CPI y SPI = `null` con razones descriptivas |
 | Proyecto sin actividades | Todos los indicadores EVM en `null`, razón: "Datos insuficientes" |
-
----
-
-## 10. Scripts de automatización
-
-En la carpeta `scripts/` hay 3 scripts PowerShell para no tener que hacer los pasos manualmente:
-
-| Script | Qué hace | Comando |
-|--------|---------|---------|
-| `setup.ps1` | Crea `.env`, entorno virtual Python, instala dependencias Python y npm | `powershell -ExecutionPolicy Bypass -File scripts\setup.ps1` |
-| `start.ps1` | Levanta backend y frontend juntos (Ctrl+C para detener) | `powershell -ExecutionPolicy Bypass -File scripts\start.ps1` |
-| `test.ps1` | Ejecuta pytest + cobertura + flake8 + tsc + eslint de una vez | `powershell -ExecutionPolicy Bypass -File scripts\test.ps1` |
-
-### Flujo rápido completo
-
-```powershell
-# Primera vez: setup + base de datos + iniciar
-powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
-psql -U postgres -c "CREATE DATABASE evm_tracker;"
-psql -U postgres -d evm_tracker -f backend\database\schema.sql
-psql -U postgres -d evm_tracker -f backend\database\seed.sql
-powershell -ExecutionPolicy Bypass -File scripts\start.ps1
-
-# Siguientes veces: solo iniciar
-powershell -ExecutionPolicy Bypass -File scripts\start.ps1
-
-# Correr tests
-powershell -ExecutionPolicy Bypass -File scripts\test.ps1
-```
-
-### Comandos manuales (si prefieres)
-
-```bash
-# === BACKEND ===
-cd backend
-python -m venv .venv && .venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-
-# === FRONTEND ===
-cd frontend
-npm install
-npm run dev
-
-# === TESTS ===
-cd backend && pytest --cov=app --cov-report=term-missing
-cd backend && python -m flake8 app/
-cd frontend && npx tsc --noEmit
-cd frontend && npm run lint
-```
 
 ---
 

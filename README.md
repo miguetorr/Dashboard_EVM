@@ -8,11 +8,108 @@ Dashboard para el monitoreo de proyectos basada en la metodología **Earned Valu
 
 | Capa | Tecnología |
 |------|-----------|
-| Backend | FastAPI (Python 3.11+) |
-| Base de datos | PostgreSQL 15+ |
-| Frontend | React 19 + TypeScript + Vite |
+| Backend | Python 3.11+ · FastAPI · SQLAlchemy · Pydantic |
+| Base de datos | PostgreSQL 14+ |
+| Frontend | React 19 · TypeScript · Vite |
 | Gráficas | Recharts |
-| Documentación API | OpenAPI 3.1 (Swagger UI integrado) |
+| Tests | pytest (66 tests, 98% cobertura) |
+| Documentación API | OpenAPI 3.1 (Swagger UI en `/docs`) |
+
+---
+
+## Requisitos previos
+
+| Herramienta | Versión mínima | Verificar con |
+|-------------|---------------|---------------|
+| Python | 3.11 | `python --version` |
+| Node.js | 18 | `node --version` |
+| PostgreSQL | 14 | `psql --version` |
+
+---
+
+## Correr el proyecto localmente
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/miguetorr/Dashboard_EVM.git
+cd Dashboard_EVM
+```
+
+### 2. Instalar dependencias
+
+```powershell
+# Asegúrate de estar en la carpeta raíz del proyecto (donde está este README)
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
+```
+
+> Este script crea el entorno virtual de Python, instala dependencias backend y frontend, y genera el archivo `.env` con credenciales por defecto (`postgres:postgres@localhost:5432/evm_tracker`).
+> Si tu PostgreSQL tiene credenciales distintas, edita el `.env` generado antes de pasar al paso 3.
+
+### 3. Inicializar la base de datos
+
+```bash
+psql -U postgres -c "CREATE DATABASE evm_tracker;"
+psql -U postgres -d evm_tracker -f backend/database/schema.sql
+psql -U postgres -d evm_tracker -f backend/database/seed.sql     # datos de ejemplo (opcional)
+```
+
+> `schema.sql` crea las tablas. `seed.sql` carga datos de ejemplo para probar la app sin tener que ingresar datos manualmente.
+
+### 4. Levantar la aplicación
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\start.ps1
+```
+
+Listo:
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:8000
+- **Swagger UI:** http://localhost:8000/docs
+
+### 5. Correr tests
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\test.ps1
+```
+
+Ejecuta de una vez: pytest + cobertura + flake8 + tsc + eslint. **Resultado esperado:** 66 tests, 98% cobertura.
+
+---
+
+## Endpoints de la API
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/api/v1/projects` | Listar proyectos con EVM consolidado |
+| POST | `/api/v1/projects` | Crear proyecto |
+| GET | `/api/v1/projects/{id}` | Detalle con actividades y EVM |
+| PUT | `/api/v1/projects/{id}` | Editar proyecto |
+| DELETE | `/api/v1/projects/{id}` | Eliminar proyecto (cascade) |
+| GET | `/api/v1/projects/{id}/activities` | Listar actividades con EVM |
+| POST | `/api/v1/projects/{id}/activities` | Crear actividad |
+| PUT | `/api/v1/projects/{id}/activities/{act_id}` | Editar actividad |
+| DELETE | `/api/v1/projects/{id}/activities/{act_id}` | Eliminar actividad |
+
+Documentación interactiva completa en http://localhost:8000/docs una vez levantado el backend.
+
+---
+
+## Indicadores EVM
+
+| Indicador | Nombre | Fórmula |
+|-----------|--------|---------|
+| PV | Valor Planificado | `(% planificado / 100) × BAC` |
+| EV | Valor Ganado | `(% real / 100) × BAC` |
+| AC | Costo Real | Dato registrado por el usuario |
+| CV | Variación de Costo | `EV − AC` |
+| SV | Variación de Cronograma | `EV − PV` |
+| CPI | Índice de Rendimiento de Costo | `EV / AC` |
+| SPI | Índice de Rendimiento de Cronograma | `EV / PV` |
+| EAC | Estimación al Completar | `BAC / CPI` |
+| VAC | Variación al Completar | `BAC − EAC` |
+
+Los indicadores consolidados del proyecto se calculan por **suma de componentes** (estándar PMI).
 
 ---
 
@@ -25,14 +122,14 @@ Dashboard para el monitoreo de proyectos basada en la metodología **Earned Valu
 │   │   ├── config.py              # Configuración via pydantic-settings
 │   │   ├── database.py            # Motor y sesión de SQLAlchemy
 │   │   ├── exceptions.py          # Excepciones de dominio
-│   │   ├── routers/               # Capa HTTP — solo enrutamiento
+│   │   ├── routers/               # Capa HTTP
 │   │   │   ├── projects.py
 │   │   │   └── activities.py
-│   │   ├── schemas/               # Pydantic: contratos solicitud/respuesta
+│   │   ├── schemas/               # Pydantic: contratos de API
 │   │   │   ├── project.py
 │   │   │   ├── activity.py
 │   │   │   └── evm.py
-│   │   ├── models/                # Modelos ORM de SQLAlchemy
+│   │   ├── models/                # Modelos ORM
 │   │   │   └── models.py
 │   │   ├── services/              # Lógica de negocio
 │   │   │   ├── project_service.py
@@ -60,7 +157,7 @@ Dashboard para el monitoreo de proyectos basada en la metodología **Earned Valu
 ├── frontend/
 │   ├── src/
 │   │   ├── api/
-│   │   │   └── client.ts
+│   │   │   └── client.ts          # Cliente HTTP tipado (axios)
 │   │   ├── components/
 │   │   │   ├── ActivityModal.tsx
 │   │   │   ├── ActivityTable.tsx
@@ -76,196 +173,25 @@ Dashboard para el monitoreo de proyectos basada en la metodología **Earned Valu
 │   │   │   ├── ProjectListPage.tsx
 │   │   │   └── ProjectDashboardPage.tsx
 │   │   ├── utils/
-│   │   │   └── evmCalculator.ts
+│   │   │   └── evmCalculator.ts   # Motor EVM (cálculo reactivo)
 │   │   ├── types/
-│   │   │   └── evm.ts
+│   │   │   └── evm.ts             # Tipos TypeScript
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   ├── package.json
 │   ├── tsconfig.json
 │   └── eslint.config.js
+├── scripts/
+│   ├── setup.ps1                  # Setup automático completo
+│   ├── start.ps1                  # Levantar backend + frontend
+│   └── test.ps1                   # Tests + linters de una vez
 ├── openapi.yaml                   # Contrato de la API
 ├── .env.example                   # Variables de entorno de referencia
 └── README.md
 ```
-```
 
 ---
 
-## Requisitos previos
+## Guía detallada
 
-- **Python** 3.11 o superior
-- **Node.js** 18 o superior + npm
-- **PostgreSQL** 15 o superior
-
----
-
-## Configuración inicial
-
-### 1. Clonar el repositorio
-
-```bash
-git clone <url-del-repositorio>
-cd Dashboard_EVM
-```
-
-### 2. Configurar variables de entorno
-
-Copiar el archivo de ejemplo y ajustar los valores:
-
-```bash
-cp .env.example .env
-```
-
-Editar `.env` con los datos de tu instancia de PostgreSQL:
-
-```
-DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/evm_tracker
-CORS_ORIGINS=http://localhost:5173
-```
-
-### 3. Crear la base de datos y cargar datos
-
-```bash
-# Crear la base de datos
-psql -U postgres -c "CREATE DATABASE evm_tracker;"
-
-# Ejecutar el DDL (tablas + constraints)
-psql -U postgres -d evm_tracker -f backend/database/schema.sql
-
-# Cargar datos de ejemplo (opcional)
-psql -U postgres -d evm_tracker -f backend/database/seed.sql
-```
-
-### 4. Levantar el backend
-
-```bash
-cd backend
-
-# Crear entorno virtual
-python -m venv venv
-
-# Activar entorno virtual
-# Windows:
-venv\Scripts\activate
-# Linux/Mac:
-source venv/bin/activate
-
-# Instalar dependencias
-pip install -r requirements.txt
-
-# Iniciar el servidor
-uvicorn app.main:app --reload --port 8000
-```
-
-El backend estará disponible en `http://localhost:8000`.
-
-### 5. Levantar el frontend
-
-```bash
-cd frontend
-
-# Instalar dependencias
-npm install
-
-# Iniciar el servidor de desarrollo
-npm run dev
-```
-
-El frontend estará disponible en `http://localhost:5173`.
-
----
-
-## Documentación de la API
-
-Una vez levantado el backend, la documentación interactiva está disponible en:
-
-- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
-
-El contrato OpenAPI también está disponible como archivo estático en `openapi.yaml` en la raíz del proyecto.
-
-### Endpoints disponibles
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/api/v1/projects` | Listar proyectos con EVM consolidado |
-| POST | `/api/v1/projects` | Crear proyecto |
-| GET | `/api/v1/projects/{id}` | Detalle con actividades y EVM |
-| PUT | `/api/v1/projects/{id}` | Editar proyecto |
-| DELETE | `/api/v1/projects/{id}` | Eliminar proyecto (cascade) |
-| GET | `/api/v1/projects/{id}/activities` | Listar actividades con EVM |
-| POST | `/api/v1/projects/{id}/activities` | Crear actividad |
-| PUT | `/api/v1/projects/{id}/activities/{act_id}` | Editar actividad |
-| DELETE | `/api/v1/projects/{id}/activities/{act_id}` | Eliminar actividad |
-
----
-
-## Tests
-
-### Correr todos los tests
-
-```bash
-cd backend
-pytest
-```
-
-### Correr tests con reporte de cobertura
-
-```bash
-pytest --cov=app --cov-report=term-missing
-```
-
-### Correr solo tests unitarios
-
-```bash
-pytest tests/unit/
-```
-
-### Correr solo tests de integración
-
-```bash
-pytest tests/integration/
-```
-
-El objetivo de cobertura es **≥ 80%** en lógica de negocio.
-
----
-
-## Linters
-
-### Backend
-
-```bash
-cd backend
-flake8 app/
-black --check app/
-```
-
-### Frontend
-
-```bash
-cd frontend
-npx eslint src/
-npx prettier --check src/
-```
-
----
-
-## Indicadores EVM
-
-La aplicación calcula automáticamente los siguientes indicadores de Valor Ganado:
-
-| Indicador | Nombre | Fórmula |
-|-----------|--------|---------|
-| PV | Valor Planificado | `(% planificado / 100) × BAC` |
-| EV | Valor Ganado | `(% real / 100) × BAC` |
-| AC | Costo Real | Dato registrado por el usuario |
-| CV | Variación de Costo | `EV − AC` |
-| SV | Variación de Cronograma | `EV − PV` |
-| CPI | Índice de Rendimiento de Costo | `EV / AC` |
-| SPI | Índice de Rendimiento de Cronograma | `EV / PV` |
-| EAC | Estimación al Completar | `BAC / CPI` |
-| VAC | Variación al Completar | `BAC − EAC` |
-
-Los indicadores consolidados del proyecto se calculan por **suma de componentes** (estándar PMI): se suman PV, EV y AC de todas las actividades y luego se calculan los índices sobre esas sumas.
+Para instrucciones paso a paso manuales (sin scripts), troubleshooting y ejemplos de pruebas con `curl`, consulta [SETUP.md](SETUP.md).

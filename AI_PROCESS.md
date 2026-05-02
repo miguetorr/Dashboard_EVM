@@ -85,3 +85,163 @@ Este archivo documenta todos los prompts enviados durante la sesión de explorac
 > Si me parece completa lo sugerido
 
 ---
+
+## Prompt 10 — Iniciar implementación del backend
+
+> continua
+
+*(Inicio de la sesión de implementación — sección 1: configuración del proyecto, estructura de directorios, requirements.txt, .flake8, pyproject.toml)*
+
+---
+
+## Prompt 11 — Continuar con base de datos
+
+> continua
+
+*(Sección 2: schema.sql con tablas projects y activities, constraints CHECK, cascade delete, seed.sql con datos de ejemplo, modelos SQLAlchemy, database.py)*
+
+---
+
+## Prompt 12 — Continuar con motor EVM
+
+> continua
+
+*(Sección 3: evm_constants.py, evm_calculator.py con calculate_activity_evm y calculate_project_evm, manejo de edge cases, redondeo con Decimal, 28 tests unitarios)*
+
+---
+
+## Prompt 13 — Continuar con schemas, repositorios y servicios
+
+> continua
+
+*(Secciones 4-6: schemas Pydantic, AbstractRepository, ProjectRepository, ActivityRepository, excepciones de dominio, ProjectService, ActivityService, AnonymousPrincipal para V2)*
+
+---
+
+## Prompt 14 — Continuar con routers y tests de integración
+
+> continua
+
+*(Secciones 7-8: routers de proyectos y actividades, main.py con CORS, conftest.py con SQLite en memoria, 38 tests de integración — total 66 tests, 98% cobertura)*
+
+---
+
+## Prompt 15 — Continuar con frontend tipos y utilidades
+
+> continua
+
+*(Sección 9: evm.ts con tipos TypeScript, evmCalculator.ts réplica del motor Python, client.ts con axios y 9 funciones tipadas)*
+
+---
+
+## Prompt 16 — Continuar con componentes compartidos
+
+> continua
+
+*(Sección 10: StatusBadge.tsx, ConfirmDialog.tsx, EVMGlossary.tsx con panel colapsable de definiciones en español)*
+
+---
+
+## Prompt 17 — Corrección en tasks.md
+
+> la tarea 9.1 dice "git pullt:" en vez del nombre correcto y la sección 11 no está marcada aunque los archivos existen
+
+---
+
+## Prompt 18 — Continuar con página de lista de proyectos
+
+> continua
+
+*(Sección 11: ProjectCard.tsx, ProjectModal.tsx con patrón inner component + key, ProjectListPage.tsx con grid, estado vacío, modal de creación/edición, eliminación con ConfirmDialog)*
+
+---
+
+## Prompt 19 — Continuar con dashboard de proyecto
+
+> continua
+
+*(Sección 12: EVMIndicators.tsx con 10 indicadores y tooltips, ActivityTable.tsx con Ver más/menos, ActivityModal.tsx con preview EVM reactivo, EVMChart.tsx con Recharts, ProjectSelector.tsx breadcrumb, ProjectDashboardPage.tsx)*
+
+---
+
+## Prompt 20 — Continuar con routing y app
+
+> continua
+
+*(Sección 13: App.tsx con rutas /projects y /projects/:id, main.tsx con BrowserRouter + StrictMode, actualización de index.html, manejo de estados de carga y error)*
+
+---
+
+## Prompt 21 — Continuar con entregables finales
+
+> continua
+
+*(Sección 14: actualización README.md, verificación OpenAPI /docs, consistencia schemas, fix flake8 y ESLint — 4 errores react-hooks/set-state-in-effect resueltos con patrón inner component y reloadKey)*
+
+---
+
+## Prompt 22 — Continuar con la iteración (nueva sesión)
+
+> Continuar: "¿Desea continuar con la iteración?"
+
+---
+
+## Prompt 23 — Verificar tareas pendientes reales
+
+> en las tareas pendientes aun queda tareas sin realizar verificalas primero
+
+---
+
+## Prompt 24 — Solicitud de guía de configuración y pruebas
+
+> necesito un archivo que indique como configurar y como poder probar el proyecto
+
+---
+
+## Prompt 25 — Pregunta sobre Node.js y simplificación del setup
+
+> por que pide node.js si dijimos que esta python con fast api ?
+>
+> adicional hay alguna forma donde sea como ejecutar algo y haga automaticamente muchos procesos para no hacer tantos pasos para ejecutar siento que son muchos pasos y si alguien quiere hacer una prueba rapida no podria por que es bastante configuracion
+
+---
+
+## Prompt 26 — Coherencia entre guía rápida y guía detallada
+
+> en el setup en la guia rapida dice que ejecute una configuracion que se llama setup ps1 y start ps1 pero en la guia detallada no aparece la ejecucion de estos archivos pienso que si ya con una tarea ya realizada para hacer estos ajustes rapido deberiamos usarla en la detallada
+
+---
+
+## Prompt 27 — Agregar prompts al AI_PROCESS.md
+
+> en el archivo ai_process colocame todos los prompts de esta conversacion adicionando a los que ya estan
+
+---
+
+## Prompt 28 — Corrección de prompts faltantes
+
+> faltan los iniciales me pusiste solo de la mitad para abajo
+
+---
+
+## Prompt 29 — Dejar AI_PROCESS como está
+
+> dejalo asi
+
+---
+
+## Prompt 30 — README para entrega en GitHub
+
+> ahora ayudame a esto me dicen esto
+>
+> Debe incluir un README.md con instrucciones para correr el proyecto localmente y el script de inicialización de la base de datos.
+>
+> es para entregar el github y que puedan hacerlo entonces no se si el setup sea muy largo para que se entrege en el github o como lo ves pero debo entregar esto
+
+---
+
+## Prompt 31 — Mejoras al README: credenciales, clonar repo, separar en SETUP
+
+> en la guia rapida paso 2 no dice nada de colocar las credenciales entonces no se si colocarlas mejor, en el paso uno seria bueno como asegurate de estar en la carpeta de archivo, y antes de eso como clonar el repo algo asi
+>
+> para el readme no quede tan largo podemos dejar setup como pasos detallados y el readmi los rapidos y hacer referencia al final de si quieres un paso a paso detallado manualmente entra al archivo setup o no se si llamarlo diferente teniendo esto como objetivo, adicional en readme me gustaria poner toda la estructura del proyecto y pon los prompt nuevos los ultimos hablados en ia_process
