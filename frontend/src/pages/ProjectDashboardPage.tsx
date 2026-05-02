@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import type { ProjectDetail, Activity } from "../types/evm";
 import {
@@ -31,23 +31,32 @@ export default function ProjectDashboardPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletingActivity, setDeletingActivity] = useState<Activity | null>(null);
 
-  const loadProject = useCallback(async () => {
-    if (!id) return;
-    try {
-      setError(null);
-      setLoading(true);
-      const data = await getProjectDetail(id);
-      setProject(data);
-    } catch {
-      setError("No se pudo cargar el proyecto.");
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+  // Carga y recarga
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    loadProject();
-  }, [loadProject]);
+    if (!id) return;
+    let cancelled = false;
+    getProjectDetail(id)
+      .then((data) => {
+        if (!cancelled) {
+          setProject(data);
+          setError(null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setError("No se pudo cargar el proyecto.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [id, reloadKey]);
+
+  function reload() {
+    setLoading(true);
+    setReloadKey((k) => k + 1);
+  }
 
   // ── Crear / Editar actividad ────────────────────────────────────────────
 
@@ -76,7 +85,7 @@ export default function ProjectDashboardPage() {
         await createActivity(id, data);
       }
       setActModalOpen(false);
-      await loadProject();
+      reload();
     } catch {
       setError("No se pudo guardar la actividad.");
     }
@@ -95,7 +104,7 @@ export default function ProjectDashboardPage() {
       await deleteActivity(id, deletingActivity.id);
       setDeleteDialogOpen(false);
       setDeletingActivity(null);
-      await loadProject();
+      reload();
     } catch {
       setError("No se pudo eliminar la actividad.");
     }
@@ -117,7 +126,7 @@ export default function ProjectDashboardPage() {
     return (
       <div className="page-status page-status--error">
         <p>{error ?? "Proyecto no encontrado."}</p>
-        <button className="btn btn--primary" onClick={loadProject}>
+        <button className="btn btn--primary" onClick={reload}>
           Reintentar
         </button>
       </div>

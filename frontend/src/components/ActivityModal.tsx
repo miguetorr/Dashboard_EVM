@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Activity } from "../types/evm";
 import { calculateActivityEvm } from "../utils/evmCalculator";
 import StatusBadge from "./StatusBadge";
@@ -16,29 +16,22 @@ interface ActivityModalProps {
   onCancel: () => void;
 }
 
-export default function ActivityModal({
-  open,
+function ActivityModalInner({
   activity,
   onSave,
   onCancel,
-}: ActivityModalProps) {
-  const [name, setName] = useState("");
-  const [bac, setBac] = useState("0");
-  const [plannedPct, setPlannedPct] = useState("0");
-  const [actualPct, setActualPct] = useState("0");
-  const [actualCost, setActualCost] = useState("0");
-
-  useEffect(() => {
-    if (open) {
-      setName(activity?.name ?? "");
-      setBac(activity?.bac?.toString() ?? "");
-      setPlannedPct(activity?.planned_percentage?.toString() ?? "0");
-      setActualPct(activity?.actual_percentage?.toString() ?? "0");
-      setActualCost(activity?.actual_cost?.toString() ?? "0");
-    }
-  }, [open, activity]);
-
-  if (!open) return null;
+}: Omit<ActivityModalProps, "open">) {
+  const [name, setName] = useState(activity?.name ?? "");
+  const [bac, setBac] = useState(activity?.bac?.toString() ?? "");
+  const [plannedPct, setPlannedPct] = useState(
+    activity?.planned_percentage?.toString() ?? "0",
+  );
+  const [actualPct, setActualPct] = useState(
+    activity?.actual_percentage?.toString() ?? "0",
+  );
+  const [actualCost, setActualCost] = useState(
+    activity?.actual_cost?.toString() ?? "0",
+  );
 
   const isEdit = activity !== null;
 
@@ -214,5 +207,22 @@ export default function ActivityModal({
         </form>
       </div>
     </div>
+  );
+}
+
+export default function ActivityModal({
+  open,
+  activity,
+  onSave,
+  onCancel,
+}: ActivityModalProps) {
+  if (!open) return null;
+  return (
+    <ActivityModalInner
+      key={activity?.id ?? "__new__"}
+      activity={activity}
+      onSave={onSave}
+      onCancel={onCancel}
+    />
   );
 }

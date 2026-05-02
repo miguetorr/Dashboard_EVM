@@ -148,7 +148,8 @@ def calculate_activity_evm(
     Calcula los 8 indicadores EVM para una actividad.
 
     Args:
-        bac:          Presupuesto hasta la conclusión (Budget at Completion). Debe ser > 0.
+        bac:          Presupuesto hasta la conclusión
+                      (Budget at Completion). Debe ser > 0.
         planned_pct:  Porcentaje de avance planificado (0-100).
         actual_pct:   Porcentaje de avance real (0-100).
         actual_cost:  Costo real incurrido. Debe ser >= 0.

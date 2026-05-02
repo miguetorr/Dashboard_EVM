@@ -23,7 +23,11 @@ class Project(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=datetime.utcnow,
+    )
     updated_at = Column(
         DateTime(timezone=True),
         nullable=False,
@@ -69,7 +73,11 @@ class Activity(Base):
     planned_percentage = Column(Numeric(5, 2), nullable=False, default=0)
     actual_percentage = Column(Numeric(5, 2), nullable=False, default=0)
     actual_cost = Column(Numeric(14, 2), nullable=False, default=0)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=datetime.utcnow,
+    )
     updated_at = Column(
         DateTime(timezone=True),
         nullable=False,
