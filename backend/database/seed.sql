@@ -3,6 +3,9 @@
 -- Ejecutar DESPUÉS de schema.sql
 -- =============================================================================
 
+-- Forzar encoding UTF-8 para caracteres especiales
+SET client_encoding TO 'UTF8';
+
 -- Limpieza previa (idempotente)
 DELETE FROM activities;
 DELETE FROM projects;

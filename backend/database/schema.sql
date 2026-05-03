@@ -3,6 +3,9 @@
 -- PostgreSQL 14+
 -- =============================================================================
 
+-- Forzar encoding UTF-8 para caracteres especiales
+SET client_encoding TO 'UTF8';
+
 -- Extensión para generación de UUIDs
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
