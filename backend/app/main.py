@@ -28,6 +28,16 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    @app.get("/", include_in_schema=False)
+    def root():
+        """Información básica de la API."""
+        return {
+            "app": "EVM Tracker API",
+            "version": "1.0.0",
+            "docs": "/docs",
+            "endpoints": "/api/v1/projects",
+        }
+
     app.include_router(projects.router)
     app.include_router(activities.router)
 

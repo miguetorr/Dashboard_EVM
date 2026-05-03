@@ -245,3 +245,54 @@ Este archivo documenta todos los prompts enviados durante la sesión de explorac
 > en la guia rapida paso 2 no dice nada de colocar las credenciales entonces no se si colocarlas mejor, en el paso uno seria bueno como asegurate de estar en la carpeta de archivo, y antes de eso como clonar el repo algo asi
 >
 > para el readme no quede tan largo podemos dejar setup como pasos detallados y el readmi los rapidos y hacer referencia al final de si quieres un paso a paso detallado manualmente entra al archivo setup o no se si llamarlo diferente teniendo esto como objetivo, adicional en readme me gustaria poner toda la estructura del proyecto y pon los prompt nuevos los ultimos hablados en ia_process
+
+---
+
+## Prompt 32 — Error de Vite: falta style.css
+
+> estaba haciendo pruebas y ejecute la tarea start.ps1 pero me sale este error
+>
+> [frontend] 5:11:49 p. m. [vite] Internal server error: Failed to resolve import "./style.css" from "src/main.tsx". Does the file exist?
+
+---
+
+## Prompt 33 — Error "No se pudieron cargar los proyectos" y problemas del frontend
+
+> me sale este error
+>
+> EVM Tracker — No se pudieron cargar los proyectos. — Reintentar
+>
+> segun openspec teniamos unas pantallas para el front el texto sale mal sale con simbolos donde irian las tildes es muy plano y no se ve ninguna grafica entonces el fron tenemos que arreglarlo
+
+---
+
+## Prompt 34 — Correcciones múltiples: seed encoding, texto desbordado, diseño y explicaciones
+
+> 1. toca ajustar seed para que tenga el tema de las tildes si toca ajustar hazlo y arregla el problema de raiz para que no ocurra
+>
+> 2. hay texto que se sale de sus casillas
+>
+> 3. me gustaria que fuera mas bonito y elegante
+>
+> 4. podrias explicarme cuando crea uno una actividad que es eso de porcentaje planificado y porcentaje real
+>
+> 5. cuando ingreso a http://localhost:8000 me manda directamente a docs
+
+---
+
+## Prompt 35 — Ajustar README y SETUP con las URLs correctas del backend
+
+> entonces ajusta readme y setup que habla de dos localhost diferentes un 8000 y otro 8000/docs
+
+---
+
+## Prompt 36 — README paso 4 sigue con las dos URLs
+
+> en el readme.md en el paso 4 sigue hablando de los dos como si fueran distintos
+
+---
+
+## Prompt 37 — Agregar últimos prompts a AI_PROCESS
+
+> agrega los ultimos prompts a iaprocess
+

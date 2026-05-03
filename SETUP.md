@@ -115,8 +115,8 @@ Levanta **backend y frontend juntos**. Muestra logs unificados con prefijo `[bac
 
 Una vez levantado:
 - **Frontend:** http://localhost:5173
-- **Backend API:** http://localhost:8000
-- **Swagger UI (docs interactivos):** http://localhost:8000/docs
+- **Backend API:** http://localhost:8000/api/v1/projects
+- **Documentación (Swagger):** http://localhost:8000/docs
 - **ReDoc:** http://localhost:8000/redoc
 
 ### 4.2 Manual (si necesitas control individual)
