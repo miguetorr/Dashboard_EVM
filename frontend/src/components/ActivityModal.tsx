@@ -117,6 +117,9 @@ function ActivityModalInner({
                 max="100"
                 step="0.01"
               />
+              <span className="form-hint">
+                ¿Cuánto debería estar listo según el plan? Ej: si planeaste completar el 60% a hoy, pon 60.
+              </span>
             </div>
 
             <div className="form-group">
@@ -131,6 +134,9 @@ function ActivityModalInner({
                 max="100"
                 step="0.01"
               />
+              <span className="form-hint">
+                ¿Cuánto se ha completado realmente? Ej: si solo se terminó el 40%, pon 40.
+              </span>
             </div>
 
             <div className="form-group">
@@ -144,6 +150,9 @@ function ActivityModalInner({
                 min="0"
                 step="0.01"
               />
+              <span className="form-hint">
+                Dinero gastado hasta ahora en esta actividad.
+              </span>
             </div>
           </div>
 

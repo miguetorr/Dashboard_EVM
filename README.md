@@ -64,8 +64,8 @@ powershell -ExecutionPolicy Bypass -File scripts\start.ps1
 
 Listo:
 - **Frontend:** http://localhost:5173
-- **Backend API:** http://localhost:8000
-- **Swagger UI:** http://localhost:8000/docs
+- **Backend API:** http://localhost:8000/api/v1/projects
+- **Documentación (Swagger):** http://localhost:8000/docs
 
 ### 5. Correr tests
 
